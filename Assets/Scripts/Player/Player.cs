@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
     public Ease ease = Ease.OutBack;
     public float scaleSize = 2.0f;
     public float scaleTime = 1f;
+    public Animator animator;
 
 
 
@@ -25,7 +26,8 @@ public class Player : MonoBehaviour
     private bool isGrounded = true;
     private Tween moveTween;
     private HealthBase health;
-    
+    private bool facingRight = true;
+
 
 
     void Start()
@@ -40,6 +42,26 @@ public class Player : MonoBehaviour
         float moveX = Input.GetAxisRaw("Horizontal");
         float moveY = 0f;
 
+
+        if (animator != null)
+        {
+            animator.SetFloat("Run", Mathf.Abs(moveX));
+            animator.SetBool("isGrounded", isGrounded);
+
+            if(Input.GetMouseButtonDown(0))
+            {
+                animator.SetTrigger("Attack");
+            }
+        }
+
+        if (moveX > 0 && !facingRight)
+        {
+            Flip();
+        }
+        else if (moveX < 0 && facingRight)
+        {
+            Flip();
+        }
 
 
         if (moveX != 0)
@@ -95,7 +117,13 @@ public class Player : MonoBehaviour
         }
     }
 
-  
+    private void Flip()
+    {
+        facingRight = !facingRight;
+        Vector3 localScale = transform.localScale;
+        localScale.x *= -1;
+        transform.localScale = localScale;
+    }
 
    
     
